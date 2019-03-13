@@ -3,6 +3,7 @@ import consts
 import logging
 import os
 import re
+import glob
 import numpy as np
 import argparse
 import sys
@@ -140,11 +141,16 @@ if __name__ == '__main__':
         if not os.path.isdir(results_dest):
             os.makedirs(results_dest)
 
-        image_tensor = pil_to_model_tensor_transform(pil_loader(args.input)).to(net.device)
-        net.test_single(
-            image_tensor=image_tensor,
-            age=args.age,
-            gender=args.gender,
-            target=results_dest,
-            watermark=args.watermark
-        )
+        input_images = glob.glob(args.input + "/*.jpg")
+
+        for filename in input_images:
+            basename = base_name = os.path.basename(filename)
+            image_tensor = pil_to_model_tensor_transform(pil_loader(filename)).to(net.device)
+            net.test_single(
+                image_tensor=image_tensor,
+                age=args.age,
+                gender=args.gender,
+                target=results_dest,
+                watermark=args.watermark,
+                filename=basename
+            )

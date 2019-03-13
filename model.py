@@ -286,8 +286,7 @@ class Net(object):
         return dest
 
 
-    def test_single(self, image_tensor, age, gender, target, watermark):
-
+    def test_single(self, image_tensor, age, gender, target, watermark, filename):
         self.eval()
         batch = image_tensor.repeat(consts.NUM_AGES, 1, 1, 1).to(device=self.device)  # N x D x H x W
         z = self.E(batch)  # N x Z
@@ -335,7 +334,7 @@ class Net(object):
                 joined[img_idx, :, :, elem_idx] = 1  # color border white
 
 
-        dest = os.path.join(target, 'menifa.png')
+        dest = os.path.join(target, filename + '.png')
         save_image_normalized(tensor=joined, filename=dest, nrow=joined.size(0))
         print_timestamp("Saved test result to " + dest)
         return dest
